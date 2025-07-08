@@ -1,0 +1,35 @@
+# Requirements para PosQuantum Desktop v2.0 - Multiplataforma
+# Compatível com Windows, Linux, macOS
+
+# Interface gráfica
+PyQt6>=6.6.0
+PyQt6-Qt6>=6.6.0
+
+# Criptografia pós-quântica
+cryptography>=41.0.0
+pycryptodome>=3.19.0
+
+# Computação científica
+numpy>=1.24.0
+
+# Compilação
+pyinstaller>=6.0.0
+
+# Rede e comunicação
+requests>=2.31.0
+websockets>=11.0.0
+aiohttp>=3.9.0
+
+# Utilitários
+psutil>=5.9.0
+pillow>=10.0.0
+
+# Dependências específicas por plataforma
+pywin32>=306; sys_platform == "win32"
+wmi>=1.5.1; sys_platform == "win32"
+
+# Desenvolvimento (opcional)
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0
+
