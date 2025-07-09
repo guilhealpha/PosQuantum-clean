@@ -2,16 +2,34 @@
 # -*- coding: utf-8 -*-
 """
 PosQuantum Desktop v2.0 - Sistema 100% Pos-Quantico
-Versao simplificada para build automatico
+Versao com configuracao de locale robusta
 """
 
 import sys
 import os
 
-# Configurar encoding UTF-8
-if sys.platform.startswith('win'):
+# Configurar encoding UTF-8 de forma robusta
+try:
     import locale
-    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+    if sys.platform.startswith('win'):
+        # Tentar configurações em ordem de preferência para Windows
+        for loc in ['C.UTF-8', 'en_US.UTF-8', 'English_United States.1252', 'C', '']:
+            try:
+                locale.setlocale(locale.LC_ALL, loc)
+                break
+            except locale.Error:
+                continue
+    else:
+        # Para Linux/macOS, tentar UTF-8
+        for loc in ['C.UTF-8', 'en_US.UTF-8', 'C']:
+            try:
+                locale.setlocale(locale.LC_ALL, loc)
+                break
+            except locale.Error:
+                continue
+except (ImportError, locale.Error):
+    # Se locale falhar completamente, continuar sem configuração
+    pass
 
 try:
     from PyQt6.QtWidgets import (
@@ -26,14 +44,14 @@ except ImportError:
     PYQT6_AVAILABLE = False
 
 class PosQuantumMainWindow(QMainWindow):
-    """Janela principal simplificada"""
+    """Janela principal do PosQuantum Desktop"""
     
     def __init__(self):
         super().__init__()
         self.init_ui()
     
     def init_ui(self):
-        """Inicializa interface simplificada"""
+        """Inicializa interface do usuario"""
         self.setWindowTitle("PosQuantum Desktop v2.0 - Sistema 100% Pos-Quantico")
         self.setGeometry(100, 100, 1200, 800)
         
@@ -109,7 +127,7 @@ class PosQuantumMainWindow(QMainWindow):
         """)
     
     def create_tabs(self):
-        """Cria abas simplificadas"""
+        """Cria abas do sistema"""
         
         # 1. Dashboard
         dashboard = self.create_dashboard()
