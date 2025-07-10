@@ -51,6 +51,158 @@ try:
 except ImportError:
     print("PyQt6 não disponível")
     PYQT6_AVAILABLE = False
+    
+    # Classes mock para ambiente headless (POSSIBILIDADE-F)
+    class QThread:
+        """Mock class para QThread quando PyQt6 não está disponível"""
+        def __init__(self):
+            self.finished = MockSignal()
+            
+        def start(self):
+            pass
+            
+        def quit(self):
+            pass
+            
+        def wait(self):
+            pass
+            
+        def terminate(self):
+            pass
+    
+    class MockSignal:
+        """Mock class para pyqtSignal quando PyQt6 não está disponível"""
+        def connect(self, *args):
+            pass
+            
+        def emit(self, *args):
+            pass
+            
+        def disconnect(self, *args):
+            pass
+    
+    def pyqtSignal(*args, **kwargs):
+        """Mock function para pyqtSignal quando PyQt6 não está disponível"""
+        return MockSignal()
+    
+    # Mock classes adicionais para compatibilidade
+    class Qt:
+        AlignCenter = 0x0004
+        AlignLeft = 0x0001
+        AlignRight = 0x0002
+        
+    class QTimer:
+        def __init__(self):
+            self.timeout = MockSignal()
+            
+        def start(self, *args):
+            pass
+            
+        def stop(self):
+            pass
+    
+    # Mock classes para widgets PyQt6
+    class QWidget:
+        def __init__(self):
+            pass
+            
+    class QMainWindow(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QApplication:
+        def __init__(self, *args):
+            pass
+            
+        @staticmethod
+        def instance():
+            return None
+            
+    class QTabWidget(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QVBoxLayout:
+        def __init__(self):
+            pass
+            
+    class QHBoxLayout:
+        def __init__(self):
+            pass
+            
+    class QLabel(QWidget):
+        def __init__(self, *args):
+            super().__init__()
+            
+    class QPushButton(QWidget):
+        def __init__(self, *args):
+            super().__init__()
+            
+    class QTextEdit(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QMessageBox:
+        @staticmethod
+        def information(*args):
+            pass
+            
+    class QFrame(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QLineEdit(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QProgressBar(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QListWidget(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QTableWidget(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QTableWidgetItem:
+        def __init__(self, *args):
+            pass
+            
+    class QGroupBox(QWidget):
+        def __init__(self, *args):
+            super().__init__()
+            
+    class QGridLayout:
+        def __init__(self):
+            pass
+            
+    class QSpinBox(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QComboBox(QWidget):
+        def __init__(self):
+            super().__init__()
+            
+    class QCheckBox(QWidget):
+        def __init__(self, *args):
+            super().__init__()
+            
+    class QFileDialog:
+        @staticmethod
+        def getOpenFileName(*args):
+            return "", ""
+            
+    class QFont:
+        def __init__(self, *args):
+            pass
+            
+    class QPixmap:
+        def __init__(self, *args):
+            pass
 
 # ============================================================================
 # SISTEMA DE LOGGING AVANÇADO
