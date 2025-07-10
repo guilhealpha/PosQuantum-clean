@@ -1,13 +1,14 @@
-# 🛡️ PosQuantum Desktop - Dependências GitHub Actions SEGURAS
-# Arquivo: requirements_github_safe.txt
-# Descrição: Apenas dependências 100% disponíveis no PyPI
-# Versão: 2.2 - ULTRA SEGURA
+# 🛡️ PosQuantum Desktop - Dependências CORRIGIDAS
+# Arquivo: requirements.txt
+# Descrição: Dependências completas incluindo PyCryptodome
+# Versão: 2.3 - CORRIGIDA
 
 # ===== INTERFACE GRÁFICA =====
 PyQt6==6.6.1
 
-# ===== CRIPTOGRAFIA BÁSICA =====
+# ===== CRIPTOGRAFIA =====
 cryptography==41.0.7
+pycryptodome==3.19.0
 
 # ===== REDE E COMUNICAÇÃO =====
 requests==2.31.0
@@ -24,6 +25,9 @@ msgpack==1.0.7
 
 # ===== TESTES =====
 pytest==7.4.3
+
+# ===== BUILD =====
+pyinstaller==6.3.0
 
 # ===== SISTEMA OPERACIONAL =====
 # Windows
