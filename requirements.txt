@@ -1,35 +1,81 @@
-# Requirements para PosQuantum Desktop v2.0 - Multiplataforma
-# Compatível com Windows, Linux, macOS
+# 🛡️ PosQuantum Desktop - Dependências Completas
+# Arquivo: requirements.txt
+# Descrição: Todas as dependências necessárias para o PosQuantum Desktop
+# Versão: 2.0
 
-# Interface gráfica
-PyQt6>=6.6.0
-PyQt6-Qt6>=6.6.0
+# ===== INTERFACE GRÁFICA =====
+PyQt6>=6.4.0
+PyQt6-Qt6>=6.4.0
 
-# Criptografia pós-quântica
+# ===== CRIPTOGRAFIA BÁSICA =====
 cryptography>=41.0.0
-pycryptodome>=3.19.0
+pycryptodome>=3.18.0
 
-# Computação científica
-numpy>=1.24.0
+# ===== CRIPTOGRAFIA PÓS-QUÂNTICA =====
+# Nota: Algumas bibliotecas podem precisar ser instaladas manualmente
+# pqcrypto>=0.1.0  # Descomentado quando disponível
+# liboqs-python>=0.7.0  # Descomentado quando disponível
 
-# Compilação
-pyinstaller>=6.0.0
-
-# Rede e comunicação
+# ===== REDE E COMUNICAÇÃO =====
 requests>=2.31.0
 websockets>=11.0.0
-aiohttp>=3.9.0
+aiohttp>=3.8.0
+paramiko>=3.2.0
 
-# Utilitários
-psutil>=5.9.0
-pillow>=10.0.0
+# ===== BLOCKCHAIN E P2P =====
+hashlib-compat>=1.0.0
+ecdsa>=0.18.0
+base58>=2.1.0
 
-# Dependências específicas por plataforma
-pywin32>=306; sys_platform == "win32"
-wmi>=1.5.1; sys_platform == "win32"
+# ===== DADOS E SERIALIZAÇÃO =====
+numpy>=1.24.0
+pandas>=2.0.0
+json5>=0.9.0
 
-# Desenvolvimento (opcional)
+# ===== MULTIMÍDIA =====
+Pillow>=10.0.0
+opencv-python>=4.8.0
+
+# ===== TESTES E QUALIDADE =====
 pytest>=7.4.0
-black>=23.0.0
+pytest-cov>=4.1.0
+pytest-asyncio>=0.21.0
+
+# ===== LOGGING E MONITORAMENTO =====
+psutil>=5.9.0
+colorlog>=6.7.0
+
+# ===== BUILD E DISTRIBUIÇÃO =====
+PyInstaller>=5.13.0
+setuptools>=68.0.0
+wheel>=0.41.0
+
+# ===== DESENVOLVIMENTO =====
+black>=23.7.0
 flake8>=6.0.0
+mypy>=1.5.0
+
+# ===== COMPATIBILIDADE =====
+typing-extensions>=4.7.0
+importlib-metadata>=6.8.0
+
+# ===== SISTEMA OPERACIONAL =====
+# Windows
+pywin32>=306; sys_platform == "win32"
+
+# Linux
+python-xlib>=0.33; sys_platform == "linux"
+
+# ===== OPCIONAL - PERFORMANCE =====
+numba>=0.57.0
+cython>=3.0.0
+
+# ===== OPCIONAL - ANÁLISE =====
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+
+# ===== VERSÕES MÍNIMAS =====
+# Python >= 3.9 requerido
+# Sistema operacional: Windows 10+, Ubuntu 20.04+, macOS 11+
 
