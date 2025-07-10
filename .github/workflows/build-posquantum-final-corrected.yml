@@ -75,10 +75,70 @@ jobs:
         touch posquantum_modules/__init__.py
         touch posquantum_modules/core/__init__.py
         
-    - name: Test import with detailed logging
+    - name: Test import with comprehensive diagnostics
       run: |
+        echo "=== COMPREHENSIVE DIAGNOSTIC START ==="
+        echo "Timestamp: $(date)"
+        echo "Working Directory: $(pwd)"
+        echo "User: $(whoami)"
+        echo "Python Version: $(python3 --version)"
+        echo "Python Path: $(which python3)"
+        
+        echo "=== ENVIRONMENT VARIABLES ==="
+        env | grep -E "(PYTHON|PATH|QT)" | sort
+        
+        echo "=== DIRECTORY CONTENTS ==="
+        ls -la
+        
+        echo "=== MAIN.PY FILE INFO ==="
+        if [ -f "main.py" ]; then
+          echo "File exists: YES"
+          echo "File size: $(stat -c%s main.py) bytes"
+          echo "File permissions: $(stat -c%A main.py)"
+          echo "File encoding: $(file -b --mime-encoding main.py)"
+          echo "First 10 lines:"
+          head -10 main.py
+          echo "Last 5 lines:"
+          tail -5 main.py
+        else
+          echo "File exists: NO"
+          echo "Files in directory:"
+          find . -name "*.py" -type f
+        fi
+        
+        echo "=== PYTHON SYNTAX CHECK ==="
+        python3 -m py_compile main.py && echo "✅ Syntax OK" || echo "❌ Syntax ERROR"
+        
+        echo "=== PYTHON IMPORT PATH ==="
+        python3 -c "import sys; print('\\n'.join(sys.path))"
+        
+        echo "=== DEPENDENCIES CHECK ==="
+        python3 -c "import pkg_resources; print('\\n'.join([str(d) for d in pkg_resources.working_set]))" | grep -i crypto
+        
+        echo "=== SETTING QT ENVIRONMENT ==="
         export QT_QPA_PLATFORM=offscreen
-        python -c "import main; print('✅ Import successful')"
+        echo "QT_QPA_PLATFORM set to: $QT_QPA_PLATFORM"
+        
+        echo "=== BASIC PYTHON TEST ==="
+        python3 -c "print('✅ Basic Python execution works')"
+        
+        echo "=== SIMPLE IMPORT TEST ==="
+        python3 -c "import os, sys; print('✅ Basic imports work')"
+        
+        echo "=== CRYPTO IMPORT TEST ==="
+        python3 -c "from Crypto.Cipher import AES; print('✅ PyCryptodome import works')" || echo "❌ PyCryptodome import failed"
+        
+        echo "=== MAIN IMPORT TEST WITH VERBOSE ==="
+        python3 -v -c "import main; print('✅ Main import successful')" 2>&1 | tee import_verbose.log
+        
+        echo "=== IMPORT LOG ANALYSIS ==="
+        if [ -f "import_verbose.log" ]; then
+          echo "Log file size: $(stat -c%s import_verbose.log) bytes"
+          echo "Errors in log:"
+          grep -i "error\|exception\|failed\|traceback" import_verbose.log || echo "No errors found in verbose log"
+        fi
+        
+        echo "=== COMPREHENSIVE DIAGNOSTIC END ==="
 
   build-executables:
     name: Build Executables
