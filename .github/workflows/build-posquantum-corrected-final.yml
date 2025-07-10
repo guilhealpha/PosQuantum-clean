@@ -121,17 +121,10 @@ jobs:
         if (!(Test-Path posquantum_modules\__init__.py)) { New-Item -ItemType File -Path posquantum_modules\__init__.py }
         if (!(Test-Path posquantum_modules\core\__init__.py)) { New-Item -ItemType File -Path posquantum_modules\core\__init__.py }
         
-    - name: Test imports only (CORRECTED)
+    - name: Test imports only (CORRECTED - Windows Fixed)
       run: |
         $env:QT_QPA_PLATFORM = "offscreen"
-        python -c "
-        try:
-            import main
-            print('[OK] Import test completed successfully')
-        except Exception as e:
-            print(f'[ERRO] Import failed: {e}')
-            exit(1)
-        "
+        python -c "import main; print('[OK] Import test completed successfully')"
         
     - name: Create PyInstaller spec file
       run: |
