@@ -125,9 +125,16 @@ jobs:
         touch posquantum_modules/__init__.py
         touch posquantum_modules/core/__init__.py
         
-    - name: Test import before build
+    - name: Test import before build (Linux)
+      if: matrix.os == 'ubuntu-22.04'
       run: |
         export QT_QPA_PLATFORM=offscreen
+        python -c "import main; print('✅ Import test passed')"
+        
+    - name: Test import before build (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        $env:QT_QPA_PLATFORM = "offscreen"
         python -c "import main; print('✅ Import test passed')"
         
     - name: Build executable (Linux)
