@@ -210,7 +210,7 @@ jobs:
         fi
         
     - name: Upload Linux executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: PosQuantumDesktop-Linux
         path: dist/PosQuantumDesktop
@@ -339,7 +339,7 @@ jobs:
       shell: powershell
         
     - name: Upload Windows executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: PosQuantumDesktop-Windows
         path: dist/PosQuantumDesktop.exe
