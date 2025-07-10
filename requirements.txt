@@ -1,38 +1,30 @@
-# 🛡️ PosQuantum Desktop - Dependências CORRIGIDAS
+# ===== BUILD =====
+# ===== CRIPTOGRAFIA =====
+# ===== INTERFACE GRÁFICA =====
+# ===== MACHINE LEARNING =====
+# ===== REDE E COMUNICAÇÃO =====
+# ===== SERIALIZAÇÃO =====
+# ===== SISTEMA E LOGS =====
+# ===== SISTEMA OPERACIONAL =====
+# ===== TESTES =====
+# ===== VERSÕES MÍNIMAS =====
 # Arquivo: requirements.txt
 # Descrição: Dependências completas incluindo PyCryptodome
-# Versão: 2.3 - CORRIGIDA
-
-# ===== INTERFACE GRÁFICA =====
-PyQt6==6.6.1
-
-# ===== CRIPTOGRAFIA =====
-cryptography==41.0.7
-pycryptodome==3.19.0
-
-# ===== REDE E COMUNICAÇÃO =====
-requests==2.31.0
-
-# ===== MACHINE LEARNING =====
-scikit-learn==1.3.2
-numpy==1.24.4
-
-# ===== SISTEMA E LOGS =====
-psutil==5.9.6
-
-# ===== SERIALIZAÇÃO =====
-msgpack==1.0.7
-
-# ===== TESTES =====
-pytest==7.4.3
-
-# ===== BUILD =====
-pyinstaller==6.3.0
-
-# ===== SISTEMA OPERACIONAL =====
-# Windows
-pywin32==306; sys_platform == "win32"
-
-# ===== VERSÕES MÍNIMAS =====
 # Python >= 3.9 requerido
-
+# Versão: 2.3 - CORRIGIDA
+# Windows
+# 🛡️ PosQuantum Desktop - Dependências CORRIGIDAS
+PyQt6==6.6.1
+cryptography==41.0.7
+msgpack==1.0.7
+numpy==1.24.4
+psutil==5.9.6
+pycryptodome==3.19.0
+pyinstaller==6.3.0
+pyinstaller[encryption]>=5.0
+pytest==7.4.3
+pywin32==306; sys_platform == "win32"
+requests==2.31.0
+scikit-learn==1.3.2
+setuptools>=65.0
+wheel>=0.38.0
