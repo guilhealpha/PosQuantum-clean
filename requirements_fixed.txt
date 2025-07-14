@@ -1,0 +1,18 @@
+# PosQuantum Desktop - Dependências Otimizadas
+# Versão: 3.0.0 - Build Working
+
+# Interface Gráfica (Essencial)
+PyQt6==6.6.1
+
+# Criptografia (Essencial)
+cryptography==41.0.7
+
+# Rede e HTTP (Essencial)
+requests==2.31.0
+
+# Build e Empacotamento (Essencial)
+pyinstaller==6.3.0
+
+# Utilitários Básicos
+pathlib2>=2.3.7; python_version<"3.4"
+
