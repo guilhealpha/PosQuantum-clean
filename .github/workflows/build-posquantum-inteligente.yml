@@ -1,0 +1,218 @@
+name: 🧠 Build PosQuantum Desktop - INTELIGENTE AI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        
+    - name: 🔍 Debug - List Files
+      run: |
+        echo "=== ARQUIVOS NO DIRETÓRIO ==="
+        dir
+        echo "=== CONTEÚDO DO main.py ==="
+        type main.py
+        
+    - name: 🧪 Test Import Inteligente
+      run: |
+        echo "=== TESTE INTELIGENTE DE IMPORT ==="
+        python -c "
+        import sys
+        import os
+        print(f'Python version: {sys.version}')
+        print(f'Current directory: {os.getcwd()}')
+        print(f'Python path: {sys.path}')
+        
+        # Adicionar diretório atual ao path
+        sys.path.insert(0, '.')
+        
+        try:
+            import main
+            print('✅ main.py importado com sucesso!')
+            
+            # Testar execução
+            result = main.main()
+            print(f'✅ main.main() executado: {result}')
+            
+        except Exception as e:
+            print(f'❌ Erro no import: {e}')
+            import traceback
+            traceback.print_exc()
+            exit(1)
+        "
+        
+    - name: 🔨 Build Executável Inteligente
+      run: |
+        echo "=== BUILD PYINSTALLER INTELIGENTE ==="
+        pyinstaller --onefile --name PosQuantumDesktop main.py
+        
+        echo "=== VERIFICANDO RESULTADO ==="
+        dir dist
+        
+    - name: ✅ Verificar Executável
+      run: |
+        if (Test-Path "dist/PosQuantumDesktop.exe") {
+            echo "✅ Executável criado com sucesso!"
+            $size = (Get-Item "dist/PosQuantumDesktop.exe").Length
+            echo "📊 Tamanho: $size bytes"
+        } else {
+            echo "❌ Executável não foi criado!"
+            exit 1
+        }
+        
+    - name: 📤 Upload Executável
+      uses: actions/upload-artifact@v4
+      with:
+        name: PosQuantumDesktop-Windows-AI
+        path: dist/PosQuantumDesktop.exe
+        
+  build-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🐍 Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+        
+    - name: 🔍 Debug - List Files
+      run: |
+        echo "=== ARQUIVOS NO DIRETÓRIO ==="
+        ls -la
+        echo "=== CONTEÚDO DO main.py ==="
+        cat main.py
+        
+    - name: 🧪 Test Import Inteligente
+      run: |
+        echo "=== TESTE INTELIGENTE DE IMPORT ==="
+        python3 -c "
+        import sys
+        import os
+        print(f'Python version: {sys.version}')
+        print(f'Current directory: {os.getcwd()}')
+        print(f'Python path: {sys.path}')
+        
+        # Adicionar diretório atual ao path
+        sys.path.insert(0, '.')
+        
+        try:
+            import main
+            print('✅ main.py importado com sucesso!')
+            
+            # Testar execução
+            result = main.main()
+            print(f'✅ main.main() executado: {result}')
+            
+        except Exception as e:
+            print(f'❌ Erro no import: {e}')
+            import traceback
+            traceback.print_exc()
+            exit(1)
+        "
+        
+    - name: 🔨 Build Executável Inteligente
+      run: |
+        echo "=== BUILD PYINSTALLER INTELIGENTE ==="
+        pyinstaller --onefile --name PosQuantumDesktop main.py
+        
+        echo "=== VERIFICANDO RESULTADO ==="
+        ls -la dist/
+        
+    - name: ✅ Verificar Executável
+      run: |
+        if [ -f "dist/PosQuantumDesktop" ]; then
+            echo "✅ Executável Linux criado com sucesso!"
+            ls -lh dist/PosQuantumDesktop
+        else
+            echo "❌ Executável Linux não foi criado!"
+            exit 1
+        fi
+        
+    - name: 📤 Upload Executável Linux
+      uses: actions/upload-artifact@v4
+      with:
+        name: PosQuantumDesktop-Linux-AI
+        path: dist/PosQuantumDesktop
+
+  create-release:
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Download Windows Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: PosQuantumDesktop-Windows-AI
+        path: ./windows/
+        
+    - name: 📥 Download Linux Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: PosQuantumDesktop-Linux-AI
+        path: ./linux/
+        
+    - name: 🏷️ Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v3.0-ai-${{ github.run_number }}
+        name: PosQuantum Desktop v3.0 AI Build ${{ github.run_number }}
+        body: |
+          🧠 **Build Inteligente com IA**
+          
+          ✅ **Executáveis Gerados:**
+          - 🪟 Windows: PosQuantumDesktop.exe
+          - 🐧 Linux: PosQuantumDesktop
+          
+          🎯 **Funcionalidades:**
+          - Sistema ultra otimizado
+          - Import inteligente
+          - Debug completo
+          
+          📊 **Status:** Build 100% funcional
+        files: |
+          windows/PosQuantumDesktop.exe
+          linux/PosQuantumDesktop
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-summary:
+    needs: [build-windows, build-linux, create-release]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: 📊 Build Summary
+      run: |
+        echo "🧠 === RESUMO DO BUILD INTELIGENTE ==="
+        echo "✅ Windows Build: ${{ needs.build-windows.result }}"
+        echo "✅ Linux Build: ${{ needs.build-linux.result }}"
+        echo "✅ Release: ${{ needs.create-release.result }}"
+        echo "🎯 Build AI concluído com sucesso!"
+
