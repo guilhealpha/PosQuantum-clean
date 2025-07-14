@@ -102,38 +102,8 @@ jobs:
             print('[OK] All imports successful on Windows')
         except Exception as e:
             print(f'[ERROR] Import failed: {e}')
-            exit 1
+            exit(1)
         "
-        
-    - name: 🔧 Create simple main.py if missing
-      run: |
-        if (!(Test-Path main.py)) {
-          Write-Host "Creating simple main.py"
-          @"
-        import sys
-        from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
-        from PyQt6.QtCore import Qt
-        
-        class PosQuantumDesktop(QMainWindow):
-            def __init__(self):
-                super().__init__()
-                self.setWindowTitle('PosQuantum Desktop v3.0.0')
-                self.setGeometry(100, 100, 800, 600)
-                
-                label = QLabel('PosQuantum Desktop - Post-Quantum Security', self)
-                label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                self.setCentralWidget(label)
-        
-        def main():
-            app = QApplication(sys.argv)
-            window = PosQuantumDesktop()
-            window.show()
-            return app.exec()
-        
-        if __name__ == '__main__':
-            sys.exit(main())
-        "@ | Out-File -FilePath main.py -Encoding utf8
-        }
         
     - name: 🏗️ Build executable with PyInstaller
       run: |
@@ -194,35 +164,22 @@ jobs:
         python -m pip install --upgrade pip
         pip install PyQt6==6.6.1 cryptography==41.0.7 requests==2.31.0 pyinstaller==6.3.0
         
-    - name: 🔧 Create simple main.py if missing
+    - name: 🧪 Test basic imports
       run: |
-        if [ ! -f main.py ]; then
-          echo "Creating simple main.py"
-          cat > main.py << 'EOF'
-        import sys
-        from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
-        from PyQt6.QtCore import Qt
-        
-        class PosQuantumDesktop(QMainWindow):
-            def __init__(self):
-                super().__init__()
-                self.setWindowTitle('PosQuantum Desktop v3.0.0')
-                self.setGeometry(100, 100, 800, 600)
-                
-                label = QLabel('PosQuantum Desktop - Post-Quantum Security', self)
-                label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                self.setCentralWidget(label)
-        
-        def main():
-            app = QApplication(sys.argv)
-            window = PosQuantumDesktop()
-            window.show()
-            return app.exec()
-        
-        if __name__ == '__main__':
-            sys.exit(main())
-        EOF
-        fi
+        export QT_QPA_PLATFORM=offscreen
+        python -c "
+        try:
+            import sys
+            print('Python version:', sys.version)
+            import PyQt6.QtCore
+            print('PyQt6 imported successfully')
+            import cryptography
+            print('Cryptography imported successfully')
+            print('[OK] All basic imports successful')
+        except Exception as e:
+            print(f'[ERROR] Import failed: {e}')
+            exit(1)
+        "
         
     - name: 🏗️ Build executable with PyInstaller
       run: |
