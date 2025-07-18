@@ -1,0 +1,11 @@
+PyQt6>=6.5.0
+PyInstaller>=5.13.0
+cryptography>=41.0.0
+pycryptodome>=3.18.0
+requests>=2.31.0
+python-dateutil>=2.8.2
+jsonschema>=4.17.3
+pyOpenSSL>=23.2.0
+setuptools>=68.0.0
+wheel>=0.40.0
+
