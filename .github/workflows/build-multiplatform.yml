@@ -18,14 +18,17 @@ jobs:
             platform: windows
             executable: PosQuantum-3.0.exe
             artifact: PosQuantum-Windows
+            separator: ";"
           - os: ubuntu-latest
             platform: linux
             executable: PosQuantum-3.0
             artifact: PosQuantum-Linux
+            separator: ":"
           - os: macos-latest
             platform: macos
             executable: PosQuantum-3.0
             artifact: PosQuantum-macOS
+            separator: ":"
 
     runs-on: ${{ matrix.os }}
 
@@ -54,41 +57,65 @@ jobs:
 import os
 import sys
 import importlib
+import importlib.util
+import importlib.machinery
 
-def import_submodules(package_name):
-    """Importa todos os submódulos de um pacote"""
-    package = importlib.import_module(package_name)
+# Corrigir sys.path antes de qualquer importação
+def fix_sys_path():
+    """Corrige sys.path para garantir que todos os módulos sejam encontrados"""
+    if hasattr(sys, "_MEIPASS"):
+        # Executando a partir do executável PyInstaller
+        base_dir = sys._MEIPASS
+    else:
+        # Executando a partir do script
+        base_dir = os.path.dirname(os.path.abspath(__file__))
     
-    if hasattr(package, "__path__"):
-        for loader, name, is_pkg in importlib.util.find_modules(package_name):
-            full_name = package_name + "." + name
-            importlib.import_module(full_name)
-            if is_pkg:
-                import_submodules(full_name)
+    # Adicionar diretório base ao path
+    if base_dir not in sys.path:
+        sys.path.insert(0, base_dir)
+    
+    # Adicionar diretórios de módulos ao path
+    module_dirs = [
+        os.path.join(base_dir, "posquantum_modules"),
+        os.path.join(base_dir, "posquantum_modules", "crypto"),
+        os.path.join(base_dir, "posquantum_modules", "network"),
+        os.path.join(base_dir, "posquantum_modules", "compliance")
+    ]
+    
+    for module_dir in module_dirs:
+        if os.path.exists(module_dir) and module_dir not in sys.path:
+            sys.path.insert(0, module_dir)
+    
+    return base_dir
 
-# Configurar diretório base
-if hasattr(sys, "_MEIPASS"):
-    # Executando a partir do executável PyInstaller
-    BASE_DIR = sys._MEIPASS
-else:
-    # Executando a partir do script
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Adicionar diretório base ao path
-sys.path.insert(0, BASE_DIR)
-
-# Importar submódulos
-try:
-    import_submodules("posquantum_modules")
-except Exception as e:
-    print(f"Erro ao importar submódulos: {e}")
+# Corrigir sys.path
+base_dir = fix_sys_path()
 
 # Configurar variáveis de ambiente
-os.environ["POSQUANTUM_BASE_DIR"] = BASE_DIR' > hooks/runtime_hook.py
+os.environ["POSQUANTUM_BASE_DIR"] = base_dir
+
+# Importar módulos principais
+try:
+    # Verificar se os módulos existem
+    module_path = os.path.join(base_dir, "posquantum_modules")
+    if os.path.exists(module_path):
+        # Importar módulos principais
+        import posquantum_modules
+        import posquantum_modules.crypto
+        import posquantum_modules.network
+        import posquantum_modules.compliance
+except Exception as e:
+    print(f"Erro ao importar módulos principais: {e}")
+
+# Debug completo
+print("Runtime hook executado com sucesso")
+print(f"sys.path: {sys.path}")
+print(f"Diretório base: {base_dir}")
+print(f"Módulos disponíveis: {os.listdir(base_dir) if os.path.exists(base_dir) else \"Diretório base não encontrado\"}")' > hooks/runtime_hook.py
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --clean --noconfirm --onefile --name="PosQuantum-3.0" --add-data="assets:assets" --add-data="posquantum_modules:posquantum_modules" --hidden-import="PyQt6.QtCore" --hidden-import="PyQt6.QtGui" --hidden-import="PyQt6.QtWidgets" --hidden-import="posquantum_modules.crypto" --hidden-import="posquantum_modules.network" --hidden-import="posquantum_modules.compliance" --runtime-hook="hooks/runtime_hook.py" main.py
+        python -m PyInstaller --clean --noconfirm --onefile --name="PosQuantum-3.0" --add-data="assets${{ matrix.separator }}assets" --add-data="posquantum_modules${{ matrix.separator }}posquantum_modules" --hidden-import="PyQt6.QtCore" --hidden-import="PyQt6.QtGui" --hidden-import="PyQt6.QtWidgets" --hidden-import="posquantum_modules.crypto" --hidden-import="posquantum_modules.network" --hidden-import="posquantum_modules.compliance" --hidden-import="posquantum_modules.crypto.ml_kem" --hidden-import="posquantum_modules.crypto.ml_dsa" --hidden-import="posquantum_modules.crypto.sphincs_plus" --hidden-import="posquantum_modules.crypto.elliptic_curve_pq_hybrid" --hidden-import="posquantum_modules.crypto.hsm_virtual" --hidden-import="posquantum_modules.network.vpn_pq" --hidden-import="posquantum_modules.compliance.certifications" --runtime-hook="hooks/runtime_hook.py" main.py
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
