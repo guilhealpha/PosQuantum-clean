@@ -2,9 +2,9 @@ name: Build PosQuantum
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -32,8 +32,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -97,7 +95,7 @@ os.environ["POSQUANTUM_BASE_DIR"] = BASE_DIR' > hooks/runtime_hook.py
         path: dist/${{ matrix.executable }}
 
     - name: Create Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       id: create_release
       uses: actions/create-release@v1
       env:
@@ -120,7 +118,7 @@ os.environ["POSQUANTUM_BASE_DIR"] = BASE_DIR' > hooks/runtime_hook.py
           Todas as funcionalidades implementadas com criptografia pós-quântica em todas as camadas.
 
     - name: Upload Release Asset
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
