@@ -48,7 +48,17 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          python -m PyInstaller --clean --noconfirm --onefile --name="PosQuantum" --add-data="posquantum_modules;posquantum_modules" --hidden-import="PyQt6.QtCore" --hidden-import="PyQt6.QtGui" --hidden-import="PyQt6.QtWidgets" --hidden-import="posquantum_modules.crypto" --hidden-import="posquantum_modules.network" --hidden-import="posquantum_modules.compliance" --hidden-import="posquantum_modules.core" --hidden-import="posquantum_modules.security" --hidden-import="posquantum_modules.ui" --hidden-import="posquantum_modules.crypto.ml_kem" --hidden-import="posquantum_modules.crypto.ml_dsa" --hidden-import="posquantum_modules.crypto.sphincs_plus" --hidden-import="posquantum_modules.crypto.elliptic_curve_pq_hybrid" --hidden-import="posquantum_modules.crypto.hsm_virtual" --hidden-import="posquantum_modules.network.vpn_pq" --hidden-import="posquantum_modules.compliance.certifications" --runtime-hook="hooks/runtime_hook.py" main.py
+          echo Iniciando build do PosQuantum.exe...
+          dir
+          echo Verificando se main.py existe...
+          if exist "main.py" (
+            echo main.py encontrado!
+          ) else (
+            echo ERRO: main.py não encontrado!
+            exit 1
+          )
+          echo Executando PyInstaller...
+          python -m PyInstaller --clean --noconfirm --onefile --name="PosQuantum" --add-data="posquantum_modules;posquantum_modules" --hidden-import="PyQt6.QtCore" --hidden-import="PyQt6.QtGui" --hidden-import="PyQt6.QtWidgets" --hidden-import="posquantum_modules" --runtime-hook="hooks/runtime_hook.py" main.py
         shell: cmd
 
       - name: Verify executable
