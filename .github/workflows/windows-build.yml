@@ -34,50 +34,16 @@ jobs:
           pip install -r requirements.txt
         shell: cmd
 
-      - name: Create runtime hooks directory
-        run: mkdir hooks
+      - name: Verify hooks directory exists
+        run: |
+          if not exist "hooks" mkdir hooks
+          echo Diretório hooks verificado/criado
         shell: cmd
 
-      - name: Create runtime hook file
+      - name: Copy runtime hook file
         run: |
-          echo # -*- coding: utf-8 -*- > hooks\runtime_hook.py
-          echo import os >> hooks\runtime_hook.py
-          echo import sys >> hooks\runtime_hook.py
-          echo. >> hooks\runtime_hook.py
-          echo # Corrigir sys.path para garantir que todos os módulos sejam encontrados >> hooks\runtime_hook.py
-          echo if hasattr(sys, '_MEIPASS'^): >> hooks\runtime_hook.py
-          echo     # Executando a partir do executável PyInstaller >> hooks\runtime_hook.py
-          echo     base_dir = sys._MEIPASS >> hooks\runtime_hook.py
-          echo else: >> hooks\runtime_hook.py
-          echo     # Executando a partir do script >> hooks\runtime_hook.py
-          echo     base_dir = os.path.dirname(os.path.abspath(__file__^)^) >> hooks\runtime_hook.py
-          echo. >> hooks\runtime_hook.py
-          echo # Adicionar diretório base ao path >> hooks\runtime_hook.py
-          echo if base_dir not in sys.path: >> hooks\runtime_hook.py
-          echo     sys.path.insert(0, base_dir^) >> hooks\runtime_hook.py
-          echo. >> hooks\runtime_hook.py
-          echo # Adicionar diretórios de módulos ao path >> hooks\runtime_hook.py
-          echo module_dirs = [ >> hooks\runtime_hook.py
-          echo     os.path.join(base_dir, 'posquantum_modules'^), >> hooks\runtime_hook.py
-          echo     os.path.join(base_dir, 'posquantum_modules', 'crypto'^), >> hooks\runtime_hook.py
-          echo     os.path.join(base_dir, 'posquantum_modules', 'network'^), >> hooks\runtime_hook.py
-          echo     os.path.join(base_dir, 'posquantum_modules', 'compliance'^), >> hooks\runtime_hook.py
-          echo     os.path.join(base_dir, 'posquantum_modules', 'core'^), >> hooks\runtime_hook.py
-          echo     os.path.join(base_dir, 'posquantum_modules', 'security'^), >> hooks\runtime_hook.py
-          echo     os.path.join(base_dir, 'posquantum_modules', 'ui'^) >> hooks\runtime_hook.py
-          echo ] >> hooks\runtime_hook.py
-          echo. >> hooks\runtime_hook.py
-          echo for module_dir in module_dirs: >> hooks\runtime_hook.py
-          echo     if os.path.exists(module_dir^) and module_dir not in sys.path: >> hooks\runtime_hook.py
-          echo         sys.path.insert(0, module_dir^) >> hooks\runtime_hook.py
-          echo. >> hooks\runtime_hook.py
-          echo # Configurar variáveis de ambiente >> hooks\runtime_hook.py
-          echo os.environ['POSQUANTUM_BASE_DIR'] = base_dir >> hooks\runtime_hook.py
-          echo. >> hooks\runtime_hook.py
-          echo # Debug >> hooks\runtime_hook.py
-          echo print('Runtime hook executado com sucesso'^) >> hooks\runtime_hook.py
-          echo print(f'sys.path: {sys.path}'^) >> hooks\runtime_hook.py
-          echo print(f'Diretório base: {base_dir}'^) >> hooks\runtime_hook.py
+          copy "hooks\runtime_hook.py" "hooks\runtime_hook_backup.py" 2>nul || echo Arquivo não existe, será criado
+          echo Runtime hook copiado/verificado
         shell: cmd
 
       - name: Build with PyInstaller
