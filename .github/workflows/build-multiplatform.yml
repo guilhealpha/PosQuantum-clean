@@ -56,78 +56,56 @@ jobs:
       - name: Create runtime hooks
         run: |
           mkdir -p hooks
-          echo '# -*- coding: utf-8 -*-
-          """
-          Hook de runtime corrigido para o PosQuantum
-          
-          Este hook é executado pelo PyInstaller durante a inicialização do aplicativo
-          para garantir que todos os módulos sejam carregados corretamente.
-          """
-          
-          import os
-          import sys
-          import importlib
-          import importlib.util
-          import importlib.machinery
-          
-          # Corrigir sys.path antes de qualquer importação
-          def fix_sys_path():
-              """Corrige sys.path para garantir que todos os módulos sejam encontrados"""
-              if hasattr(sys, "_MEIPASS"):
-                  # Executando a partir do executável PyInstaller
-                  base_dir = sys._MEIPASS
-              else:
-                  # Executando a partir do script
-                  base_dir = os.path.dirname(os.path.abspath(__file__))
-              
-              # Adicionar diretório base ao path
-              if base_dir not in sys.path:
-                  sys.path.insert(0, base_dir)
-              
-              # Adicionar diretórios de módulos ao path
-              module_dirs = [
-                  os.path.join(base_dir, "posquantum_modules"),
-                  os.path.join(base_dir, "posquantum_modules", "crypto"),
-                  os.path.join(base_dir, "posquantum_modules", "network"),
-                  os.path.join(base_dir, "posquantum_modules", "compliance"),
-                  os.path.join(base_dir, "posquantum_modules", "core"),
-                  os.path.join(base_dir, "posquantum_modules", "security"),
-                  os.path.join(base_dir, "posquantum_modules", "ui")
-              ]
-              
-              for module_dir in module_dirs:
-                  if os.path.exists(module_dir) and module_dir not in sys.path:
-                      sys.path.insert(0, module_dir)
-              
-              return base_dir
-          
-          # Corrigir sys.path
-          base_dir = fix_sys_path()
-          
-          # Configurar variáveis de ambiente
-          os.environ["POSQUANTUM_BASE_DIR"] = base_dir
-          
-          # Importar módulos principais
-          try:
-              # Verificar se os módulos existem
-              module_path = os.path.join(base_dir, "posquantum_modules")
-              if os.path.exists(module_path):
-                  # Importar módulos principais
-                  import posquantum_modules
-                  import posquantum_modules.crypto
-                  import posquantum_modules.network
-                  import posquantum_modules.compliance
-                  import posquantum_modules.core
-                  import posquantum_modules.security
-                  import posquantum_modules.ui
-          except Exception as e:
-              print(f"Erro ao importar módulos principais: {e}")
-          
-          # Debug completo
-          print("Runtime hook executado com sucesso")
-          print(f"sys.path: {sys.path}")
-          print(f"Diretório base: {base_dir}")
-          print(f"Módulos disponíveis: {os.listdir(base_dir) if os.path.exists(base_dir) else "Diretório base não encontrado"}")' > hooks/runtime_hook.py
+          cat > hooks/runtime_hook.py << 'EOL'
+# -*- coding: utf-8 -*-
+import os
+import sys
+import importlib
+import importlib.util
+import importlib.machinery
+
+# Corrigir sys.path antes de qualquer importação
+def fix_sys_path():
+    """Corrige sys.path para garantir que todos os módulos sejam encontrados"""
+    if hasattr(sys, "_MEIPASS"):
+        # Executando a partir do executável PyInstaller
+        base_dir = sys._MEIPASS
+    else:
+        # Executando a partir do script
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Adicionar diretório base ao path
+    if base_dir not in sys.path:
+        sys.path.insert(0, base_dir)
+    
+    # Adicionar diretórios de módulos ao path
+    module_dirs = [
+        os.path.join(base_dir, "posquantum_modules"),
+        os.path.join(base_dir, "posquantum_modules", "crypto"),
+        os.path.join(base_dir, "posquantum_modules", "network"),
+        os.path.join(base_dir, "posquantum_modules", "compliance"),
+        os.path.join(base_dir, "posquantum_modules", "core"),
+        os.path.join(base_dir, "posquantum_modules", "security"),
+        os.path.join(base_dir, "posquantum_modules", "ui")
+    ]
+    
+    for module_dir in module_dirs:
+        if os.path.exists(module_dir) and module_dir not in sys.path:
+            sys.path.insert(0, module_dir)
+    
+    return base_dir
+
+# Corrigir sys.path
+base_dir = fix_sys_path()
+
+# Configurar variáveis de ambiente
+os.environ["POSQUANTUM_BASE_DIR"] = base_dir
+
+# Debug completo
+print("Runtime hook executado com sucesso")
+print(f"sys.path: {sys.path}")
+print(f"Diretório base: {base_dir}")
+EOL
           
       - name: Build with PyInstaller
         run: |
