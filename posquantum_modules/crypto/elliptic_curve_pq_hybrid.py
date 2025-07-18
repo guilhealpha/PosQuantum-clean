@@ -1351,7 +1351,7 @@ if __name__ == "__main__":
         print("Erro: Segredos compartilhados não correspondem!")
     
     # Criptografar mensagem
-    message = b"Mensagem de teste para criptografia híbrida"
+    message = "Mensagem de teste para criptografia hibrida".encode('utf-8')
     encrypt_result = hybrid.encrypt({
         "ec_public_key": keypair["ec_public_key"],
         "pq_public_key": keypair["pq_public_key"]
