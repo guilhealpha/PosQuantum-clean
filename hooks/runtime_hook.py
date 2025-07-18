@@ -1,90 +1,85 @@
 # -*- coding: utf-8 -*-
 """
-Hook de runtime corrigido para o PosQuantum
-
-Este hook é executado pelo PyInstaller durante a inicialização do aplicativo
-para garantir que todos os módulos sejam carregados corretamente.
+Runtime Hook para PosQuantum
+Corrige o sys.path para garantir que todos os módulos sejam encontrados
 """
 
 import os
 import sys
-import importlib
-import importlib.util
-import importlib.machinery
 
-# Corrigir sys.path antes de qualquer importação
-def fix_sys_path():
-    """Corrige sys.path para garantir que todos os módulos sejam encontrados"""
+def setup_posquantum_paths():
+    """Configura os caminhos necessários para o PosQuantum"""
+    
+    # Determinar diretório base
     if hasattr(sys, '_MEIPASS'):
         # Executando a partir do executável PyInstaller
         base_dir = sys._MEIPASS
+        print(f"[PosQuantum] Executando do executável PyInstaller: {base_dir}")
     else:
         # Executando a partir do script
         base_dir = os.path.dirname(os.path.abspath(__file__))
+        print(f"[PosQuantum] Executando do script: {base_dir}")
     
-    # Adicionar diretório base ao path
+    # Adicionar diretório base ao path se não estiver presente
     if base_dir not in sys.path:
         sys.path.insert(0, base_dir)
+        print(f"[PosQuantum] Adicionado ao sys.path: {base_dir}")
     
-    # Adicionar diretórios de módulos ao path
+    # Definir diretórios de módulos
     module_dirs = [
         os.path.join(base_dir, 'posquantum_modules'),
         os.path.join(base_dir, 'posquantum_modules', 'crypto'),
         os.path.join(base_dir, 'posquantum_modules', 'network'),
-        os.path.join(base_dir, 'posquantum_modules', 'compliance')
+        os.path.join(base_dir, 'posquantum_modules', 'compliance'),
+        os.path.join(base_dir, 'posquantum_modules', 'core'),
+        os.path.join(base_dir, 'posquantum_modules', 'security'),
+        os.path.join(base_dir, 'posquantum_modules', 'ui')
     ]
     
+    # Adicionar cada diretório de módulo ao path
     for module_dir in module_dirs:
         if os.path.exists(module_dir) and module_dir not in sys.path:
             sys.path.insert(0, module_dir)
+            print(f"[PosQuantum] Adicionado módulo ao sys.path: {module_dir}")
+    
+    # Configurar variáveis de ambiente
+    os.environ['POSQUANTUM_BASE_DIR'] = base_dir
+    os.environ['POSQUANTUM_MODULES_DIR'] = os.path.join(base_dir, 'posquantum_modules')
+    
+    # Verificar se os módulos principais existem
+    main_modules = [
+        'posquantum_modules.crypto.ml_kem',
+        'posquantum_modules.crypto.ml_dsa',
+        'posquantum_modules.crypto.sphincs_plus',
+        'posquantum_modules.crypto.elliptic_curve_pq_hybrid',
+        'posquantum_modules.crypto.hsm_virtual',
+        'posquantum_modules.network.vpn_pq',
+        'posquantum_modules.compliance.certifications'
+    ]
+    
+    print("[PosQuantum] Verificando módulos principais...")
+    for module_name in main_modules:
+        try:
+            module_path = module_name.replace('.', os.sep) + '.py'
+            full_path = os.path.join(base_dir, module_path)
+            if os.path.exists(full_path):
+                print(f"[PosQuantum] ✅ Módulo encontrado: {module_name}")
+            else:
+                print(f"[PosQuantum] ⚠️ Módulo não encontrado: {module_name} ({full_path})")
+        except Exception as e:
+            print(f"[PosQuantum] ❌ Erro ao verificar módulo {module_name}: {e}")
+    
+    print(f"[PosQuantum] Runtime hook configurado com sucesso!")
+    print(f"[PosQuantum] sys.path atual: {len(sys.path)} entradas")
+    print(f"[PosQuantum] Diretório base: {base_dir}")
     
     return base_dir
 
-# Corrigir sys.path
-base_dir = fix_sys_path()
-
-# Configurar variáveis de ambiente
-os.environ['POSQUANTUM_BASE_DIR'] = base_dir
-
-# Função para importar submódulos
-def import_submodules(package_name):
-    """Importa todos os submódulos de um pacote"""
-    try:
-        # Importar pacote
-        if package_name in sys.modules:
-            package = sys.modules[package_name]
-        else:
-            package = importlib.import_module(package_name)
-        
-        # Verificar se o pacote tem path
-        if hasattr(package, '__path__'):
-            # Iterar sobre submódulos
-            for finder, name, is_pkg in importlib.machinery.PathFinder.find_spec(package_name).submodule_search_locations:
-                full_name = package_name + '.' + name
-                try:
-                    importlib.import_module(full_name)
-                    if is_pkg:
-                        import_submodules(full_name)
-                except Exception as e:
-                    print(f"Erro ao importar {full_name}: {e}")
-    except Exception as e:
-        print(f"Erro ao importar submódulos de {package_name}: {e}")
-
-# Importar módulos principais
+# Executar configuração
 try:
-    # Verificar se os módulos existem
-    module_path = os.path.join(base_dir, 'posquantum_modules')
-    if os.path.exists(module_path):
-        # Importar módulos principais
-        import posquantum_modules
-        import posquantum_modules.crypto
-        import posquantum_modules.network
-        import posquantum_modules.compliance
+    setup_posquantum_paths()
 except Exception as e:
-    print(f"Erro ao importar módulos principais: {e}")
+    print(f"[PosQuantum] ERRO no runtime hook: {e}")
+    import traceback
+    traceback.print_exc()
 
-# Debug completo
-print("Runtime hook executado com sucesso")
-print(f"sys.path: {sys.path}")
-print(f"Diretório base: {base_dir}")
-print(f"Módulos disponíveis: {os.listdir(base_dir) if os.path.exists(base_dir) else 'Diretório base não encontrado'}")
