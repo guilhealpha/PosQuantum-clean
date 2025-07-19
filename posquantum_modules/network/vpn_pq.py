@@ -297,19 +297,25 @@ class VPNPostQuantum:
         self.preferred_protocol = VPNProtocol.QUANTUM_SHIELD
         self.security_level = VPNSecurityLevel.HIGH
         
-        # Carregar configuração
-        self.config_manager = ConfigManager("vpn_pq", config_path)
-        self._load_config()
+        # Configuração padrão (sem ConfigManager)
+        self.config = {
+            "auto_reconnect": True,
+            "preferred_protocol": "QUANTUM_SHIELD",
+            "security_level": "HIGH",
+            "connection_timeout": 30,
+            "retry_attempts": 3
+        }
         
-        # Inicializar sistema de logging
-        self.logging_system = LoggingSystem("vpn_pq")
+        # Inicializar sistema de logging básico
+        self.logger = logging.getLogger("posquantum.network.vpn")
         
         # Carregar lista de servidores
         self._load_servers()
     
     def _load_config(self) -> None:
         """Carrega a configuração da VPN"""
-        config = self.config_manager.get_config()
+        # Usar configuração padrão já definida
+        config = self.config
         
         if "kill_switch" in config:
             self.kill_switch_enabled = config["kill_switch"]
@@ -536,9 +542,9 @@ class VPNPostQuantum:
         self.kill_switch_enabled = enabled
         
         # Atualizar configuração
-        config = self.config_manager.get_config()
+        config = self.config
         config["kill_switch"] = enabled
-        self.config_manager.save_config(config)
+        
         
         # Aplicar configuração se houver conexão ativa
         if self.current_connection and self.current_connection.connected:
@@ -571,12 +577,12 @@ class VPNPostQuantum:
             self.split_tunneling_apps = apps
         
         # Atualizar configuração
-        config = self.config_manager.get_config()
+        config = self.config
         config["split_tunneling"] = {
             "enabled": enabled,
             "apps": self.split_tunneling_apps
         }
-        self.config_manager.save_config(config)
+        
         
         # Aplicar configuração se houver conexão ativa
         if self.current_connection and self.current_connection.connected:
@@ -605,9 +611,9 @@ class VPNPostQuantum:
         self.preferred_protocol = protocol
         
         # Atualizar configuração
-        config = self.config_manager.get_config()
+        config = self.config
         config["preferred_protocol"] = protocol.name
-        self.config_manager.save_config(config)
+        
         
         return {
             "success": True,
@@ -628,9 +634,9 @@ class VPNPostQuantum:
         self.security_level = level
         
         # Atualizar configuração
-        config = self.config_manager.get_config()
+        config = self.config
         config["security_level"] = level.name
-        self.config_manager.save_config(config)
+        
         
         return {
             "success": True,
