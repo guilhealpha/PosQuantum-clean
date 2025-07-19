@@ -1,0 +1,83 @@
+[
+    {
+        "name": "NIST Cybersecurity Framework Self-Assessment",
+        "description": "Auto-avaliação de conformidade com o framework de cibersegurança do NIST",
+        "category": "Gratuita",
+        "cost": "$0",
+        "duration": "1-2 semanas",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "OpenSSF Scorecard",
+        "description": "Análise automatizada de práticas de desenvolvimento seguro",
+        "category": "Gratuita",
+        "cost": "$0",
+        "duration": "Contínua",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "OWASP SAMM Assessment",
+        "description": "Auto-avaliação de maturidade de segurança no desenvolvimento",
+        "category": "Gratuita",
+        "cost": "$0",
+        "duration": "2-4 semanas",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "Cyber Essentials (Reino Unido)",
+        "description": "Certificação de segurança para acesso a contratos governamentais no Reino Unido",
+        "category": "Baixo Custo",
+        "cost": "£300-500",
+        "duration": "1-2 meses",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "Essential 8 (Austrália)",
+        "description": "Certificação de segurança para conformidade com o governo australiano",
+        "category": "Baixo Custo",
+        "cost": "AUD $5.000-15.000",
+        "duration": "2-3 meses",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "FIPS 140-3",
+        "description": "Padrão americano e canadense para validação de módulos criptográficos",
+        "category": "Formal",
+        "cost": "$150.000 - $500.000",
+        "duration": "18-24 meses",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "Common Criteria EAL4",
+        "description": "Padrão internacional para avaliação de segurança de produtos de TI",
+        "category": "Formal",
+        "cost": "$200.000 - $800.000",
+        "duration": "12-18 meses",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "ISO/IEC 27001:2022",
+        "description": "Padrão internacional para sistemas de gestão de segurança da informação",
+        "category": "Formal",
+        "cost": "$50.000 - $150.000",
+        "duration": "6-12 meses",
+        "status": "Não Iniciada",
+        "details": {}
+    },
+    {
+        "name": "SOC 2 Type II",
+        "description": "Auditoria de controles de segurança para provedores de serviços",
+        "category": "Formal",
+        "cost": "$75.000 - $200.000",
+        "duration": "6-9 meses",
+        "status": "Não Iniciada",
+        "details": {}
+    }
+]

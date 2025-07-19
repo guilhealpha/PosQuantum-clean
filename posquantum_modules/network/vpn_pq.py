@@ -33,12 +33,10 @@ from enum import Enum
 from typing import Dict, List, Tuple, Optional, Union, Any
 
 # Importações internas
-from posquantum_modules.crypto.ml_kem import MLKEM
-from posquantum_modules.crypto.ml_dsa import MLDSA
+from posquantum_modules.crypto.ml_kem import MLKEMImplementation
+from posquantum_modules.crypto.ml_dsa import MLDSAImplementation
 from posquantum_modules.crypto.elliptic_curve_pq_hybrid import EllipticCurvePQHybrid
 from posquantum_modules.crypto.hsm_virtual import HSMVirtual
-from posquantum_modules.core.logging_system import LoggingSystem
-from posquantum_modules.core.config_manager import ConfigManager
 
 # Configuração de logging
 logger = logging.getLogger("posquantum.network.vpn")

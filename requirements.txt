@@ -8,4 +8,5 @@ jsonschema>=4.17.3
 pyOpenSSL>=23.2.0
 setuptools>=68.0.0
 wheel>=0.40.0
+psutil>=5.9.0
 
